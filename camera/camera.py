@@ -2,7 +2,7 @@ import cv2
 import datetime
 
 cv2.namedWindow("preview")
-vc = cv2.VideoCapture(0)
+vc = cv2.VideoCapture(1)
 
 sample_rate = 5
 frames_before = 5
@@ -37,7 +37,7 @@ while rval:
             del img_buffer[0]
         if (seen_stuff != "NONE"):
             recording_now = seen_stuff
-            print "Found the damn " + recording_now + "\n"
+            print ( "Found the damn " + recording_now + "\n")
         else:
             if (recording_now == "NONE"):
                 while (len(img_buffer) > frames_before):
@@ -49,7 +49,7 @@ while rval:
                     for f in img_buffer:
                         cv2.imwrite("gotit%d.jpg"%curridx, f);
                         curridx = curridx + 1
-                    print recording_now + " was last seen at " + str(datetime.datetime.now()) + "\n"
+                    print ( recording_now + " was last seen at " + str(datetime.datetime.now()) + "\n")
                     recording_now = "NONE"
     if key == 27: # exit on ESC
         break
