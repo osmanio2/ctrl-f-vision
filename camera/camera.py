@@ -50,7 +50,6 @@ for im in reader:
         if (seen_stuff != "NONE"):
             # we only now see something of interest
             recording_now = seen_stuff
-            print("I can see the " + recording_now + "\n")
         else:
             if (recording_now == "NONE"):
                 # nothing is being observed
@@ -61,14 +60,18 @@ for im in reader:
                 # record for a little longer
                 post_frames = post_frames + 1
                 if (post_frames == frames_after):
-                    print(img_buffer[0].shape)
                     # we would love to make the gif more compressed...
                     kargs = { 'loop':1, 'quantizer':'nq' }
-                    imageio.mimwrite("gifs/%s.gif" % recording_now,
+                    imageio.mimwrite("records/%s.gif" % recording_now,
                                      img_buffer, 'GIF-FI', **kargs)
-                    # get timestamp
-                    print(recording_now + " was last seen at " +
-                          str(datetime.datetime.now()) + "\n")
+                    # write additional data inside json
+                    fp = open("records/%s.json" % recording_now, 'w')
+                    fp.write("{\n")
+                    fp.write("    \"id\": \"%s\", \n" % recording_now);
+                    fp.write("    \"time\": \"%s\" \n" %
+                             str(datetime.datetime.now()))
+                    fp.write("}\n")
+                    fp.close()
                     recording_now = "NONE"
 # done!
 cv2.destroyWindow("preview")
