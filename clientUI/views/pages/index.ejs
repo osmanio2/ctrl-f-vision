@@ -19,36 +19,44 @@
 			<h1>Ctrl+F Vision</h1>
 			<!-- EYE icon -->
 			<h2>Looking for something ?</h2>
-			<img src="img/search_eye.png" width="200"/>
-			<i class="fa fa-eye" aria-hidden="true"></i>
-			<i class="fa fa-camera-retro fa-4x"></i>
+			<img src="img/search_eye.png" width="100"/>
+			<!-- <i class="fa fa-eye fa-4x" style="color:green" aria-hidden="true"></i>
+			<i class="fa fa-camera-retro fa-4x"></i> -->
+
 			<div class="text-center" style="margin-top: 50px">
 				<h4>Crap, I've lost my</h4>
 			</div>
 			<div class="search">
-				<input type="text" class="" placeholder="item">
+				<input type="text" id="search-box" placeholder="item">
 			</div>
 		</div>
-		<!-- <p><%= /* tagline */%> The total price of all calls is <%= /* entries */ %> USD </p> -->
+		
 		<div class="col-sm-12" style="margin-top: 40px; overflow: auto;">
 			<!-- <h2>Logs</h2> -->
 			<div class="col-sm-12 col-md-8 col-md-offset-2 content">
-				<% entries.forEach( (entry) => { %>
-				<div class="col-sm-12 item">
-					<div class=" col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-0 gif" style="padding:0 15px 0px 0">
-						<img src="<%= entry.gifUrl %>" width="100%" style="max-width: 400px">
+				<% if ( !error) { %>
+					<% entries.forEach( (entry) => { %>
+					<div class="col-sm-12 item">
+						<div class=" col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-0 gif" style="padding:0 15px 0px 0">
+							<img src="<%= entry.gifUrl %>" width="100%" style="max-width: 400px">
+						</div>
+						<div class="col-sm-4 tags">
+							<h5> Looks like you last saw it here! </h5>
+							<p> @ <%= entry.timestamp %> </p>
+							<p>
+								<% entry.tags.forEach( (tag) => { %>
+								<span class="tag"><%= tag %></span>
+								<% }); %>
+							</p>
+						</div>
 					</div>
-					<div class="col-sm-4 tags">
-						<h5> Looks like you last saw it here! </h5>
-						<p> @ <%= entry.timestamp %> </p>
-						<p>
-							<% entry.tags.forEach( (tag) => { %>
-							<span class="tag"><%= tag %></span>
-							<% }); %>
-						</p>
+					<% }); %>
+				<% } else { %>
+					<div class="col-sm-12 item">
+						<h4>No items found</h4>
 					</div>
-				</div>
-				<% }); %>
+				<% } %>
+
 			</div>
 		</div>
 		
@@ -60,4 +68,13 @@
 	</footer>
 	
 </body>
+<script>
+document.getElementById("search-box")
+    .addEventListener("keyup", function(event) {
+    event.preventDefault();
+    if (event.keyCode == 13) {
+        window.location = 'http://localhost:3000/'  + document.getElementById("search-box").value;
+    }
+});
+</script>
 </html>

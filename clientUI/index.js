@@ -14,14 +14,12 @@ app.set('view engine', 'ejs');
 
 /*  Use morgan for HTTP request logging in dev and prod
 */
-if (process.env.NODE_ENV !== 'test') {
-  app.use(morgan('combined'));
-}
+app.use(morgan('combined'));
 
 /*  Serve static assets
 */
 app.use('/', express.static(path.join(__dirname, 'public')));
-app.use('/gifs', express.static(path.join(__dirname, '/../gifs')));
+app.use('/records', express.static(path.join(__dirname, '/../records')));
 
 /*  Parse incoming form-encoded HTTP bodies
 */
