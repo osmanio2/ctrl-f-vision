@@ -21,7 +21,8 @@ max_buffer_len = 50
 
 # what is currently recorded?
 img_buffer = []
-recording_now = "NONE"
+recording_now = "without"
+sess = create_graph()
 
 # manage recording 'logic'
 idx = 0
@@ -33,9 +34,12 @@ imageio.plugins.freeimage.download()
 
 # TODO: actually put recognition stuff
 def item_seen(frame):
-	# Creates graph from saved GraphDef.
-	create_graph()
-    return run_inference_on_image(np.asarray(frame))
+    #print(frame)
+    global sess
+    imageio.imwrite('picture_out.jpg', frame)
+    image = run_inference_on_image('picture_out.jpg', sess)
+    print("This is the Image yaaaaaaaaaaaaaa {}".format(image))
+    return image
 
 # main loop
 for im in reader:
@@ -51,25 +55,32 @@ for im in reader:
         # keep buffer limit
         while (len(img_buffer) > max_buffer_len):
             del img_buffer[0]
+            #print("IAM IN THE SECOND WHILE LOOP")
+        #print("THIS IS THE VALUE OF SEEEEEN {}".format(seen_stuff))
         if (seen_stuff != "without"):
             # we only now see something of interest
             recording_now = seen_stuff
         else:
+            #print("IAM IN THE FIRST ELSE BRANCH"*5)
             if (recording_now == "without"):
                 # nothing is being observed
                 while (len(img_buffer) > frames_before):
+                    #print("IAM IN THE THIRD WHILE LOOP"*6)
                     del img_buffer[0]
             else:
                 # I no longer see what I am recording
                 # record for a little longer
+                #print("IAM IN THE SECOND ELSE LOOP" * 8)
                 post_frames = post_frames + 1
                 if (post_frames == frames_after):
                     # we would love to make the gif more compressed...
+                    #print("Saaaaaaaaaaaaaaving")
+                    post_frames = 0
                     kargs = { 'loop':1, 'quantizer':'nq' }
-                    imageio.mimwrite("records/%s.gif" % recording_now,
+                    imageio.mimwrite("../records/%s.gif" % recording_now,
                                      img_buffer, 'GIF-FI', **kargs)
                     # write additional data inside json
-                    fp = open("records/%s.json" % recording_now, 'w')
+                    fp = open("../records/%s.json" % recording_now, 'w')
                     fp.write("{\n")
                     fp.write("    \"id\": \"%s\", \n" % recording_now);
                     fp.write("    \"time\": \"%s\" \n" %
