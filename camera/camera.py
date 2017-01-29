@@ -1,16 +1,15 @@
-import cv2
 import datetime
+import imageio
+import os
 import sys
+import visvis as vv
 
 # which camera?
-camera_id = int(sys.argv[1])
-
-# setting up
-cv2.namedWindow("preview")
-vc = cv2.VideoCapture(camera_id)
+reader = imageio.get_reader("<video%d>" % int(sys.argv[1]))
+t = vv.imshow(reader.get_next_data(), clim=(0, 255))
 
 # hardcoded stuff (pick sensible values)
-sample_rate = 5
+sample_rate = 50
 frames_before = 5
 frames_after = 5
 max_buffer_len = 50
@@ -22,31 +21,29 @@ recording_now = "NONE"
 # manage recording 'logic'
 idx = 0
 post_frames = 0
+tstep = 0 # only for testing
+
+# download gif stuff
+imageio.plugins.freeimage.download()
 
 # TODO: actually put recognition stuff
 def item_seen(frame):
-    if (idx >= sample_rate * 9 and idx <= sample_rate * 17):
+    if (tstep >= 9 and tstep <= 17):
         return "KEY"
     else:
         return "NONE"
 
-# is camera working
-if vc.isOpened(): # try to get the first frame
-    rval, frame = vc.read()
-else:
-    rval = False
-
 # main loop
-while rval:
+for im in reader:
     # get current frame
-    cv2.imshow("preview", frame)
-    (rval, frame) = vc.read()
-    key = cv2.waitKey(20)
-    idx = (idx + 1) % sample_rate
+    vv.processEvents()
+    t.SetData(im)
     # not interested in all of them
+    idx = (idx + 1) % sample_rate
     if (idx == 0):
-        img_buffer.append(frame)
-        seen_stuff = item_seen(frame)
+        tstep = tstep + 1
+        img_buffer.append(im)
+        seen_stuff = item_seen(im)
         # keep buffer limit
         while (len(img_buffer) > max_buffer_len):
             del img_buffer[0]
@@ -64,13 +61,11 @@ while rval:
                 # record for a little longer
                 post_frames = post_frames + 1
                 if (post_frames == frames_after):
-                    # save images
-                    curridx = 0
-                    for f in img_buffer:
-                        print("img/%s_%d.jpg" % (recording_now, curridx))
-                        cv2.imwrite("img/%s_%d.jpg" % (recording_now, curridx),
-                                    f)
-                        curridx = curridx + 1
+                    print(img_buffer[0].shape)
+                    # we would love to make the gif more compressed...
+                    kargs = { 'loop':1, 'quantizer':'nq' }
+                    imageio.mimwrite("gifs/%s.gif" % recording_now,
+                                     img_buffer, 'GIF-FI', **kargs)
                     # get timestamp
                     print(recording_now + " was last seen at " +
                           str(datetime.datetime.now()) + "\n")
