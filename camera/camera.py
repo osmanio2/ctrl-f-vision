@@ -1,12 +1,17 @@
 import datetime
+from retrainingexample import *
 import imageio
+import numpy as np
 import os
 import sys
-import visvis as vv
+import visvis as vv	
 
 # which camera?
+imageio.plugins.ffmpeg.download()
 reader = imageio.get_reader("<video%d>" % int(sys.argv[1]))
 t = vv.imshow(reader.get_next_data(), clim=(0, 255))
+
+
 
 # hardcoded stuff (pick sensible values)
 sample_rate = 50
@@ -28,10 +33,9 @@ imageio.plugins.freeimage.download()
 
 # TODO: actually put recognition stuff
 def item_seen(frame):
-    if (tstep >= 9 and tstep <= 17):
-        return "KEY"
-    else:
-        return "NONE"
+	# Creates graph from saved GraphDef.
+	create_graph()
+    return run_inference_on_image(np.asarray(frame))
 
 # main loop
 for im in reader:
@@ -47,11 +51,11 @@ for im in reader:
         # keep buffer limit
         while (len(img_buffer) > max_buffer_len):
             del img_buffer[0]
-        if (seen_stuff != "NONE"):
+        if (seen_stuff != "without"):
             # we only now see something of interest
             recording_now = seen_stuff
         else:
-            if (recording_now == "NONE"):
+            if (recording_now == "without"):
                 # nothing is being observed
                 while (len(img_buffer) > frames_before):
                     del img_buffer[0]
@@ -67,9 +71,11 @@ for im in reader:
                     # write additional data inside json
                     fp = open("records/%s.json" % recording_now, 'w')
                     fp.write("{\n")
-                    fp.write("    \"id\": \"%s\", \n" % recording_now);
-                    fp.write("    \"time\": \"%s\" \n" %
+                    fp.write("    \"id\": 123");
+                    fp.write("    \"gifUrl\": \"%s\", \n" % recording_now);
+                    fp.write("    \"timestamp\": \"%s\", \n" %
                              str(datetime.datetime.now()))
+                    fp.write("    \"tags\": [\"andrej\",\"passport\"]");
                     fp.write("}\n")
                     fp.close()
                     recording_now = "NONE"
