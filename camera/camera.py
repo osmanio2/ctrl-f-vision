@@ -71,9 +71,11 @@ for im in reader:
                     # write additional data inside json
                     fp = open("records/%s.json" % recording_now, 'w')
                     fp.write("{\n")
-                    fp.write("    \"id\": \"%s\", \n" % recording_now);
-                    fp.write("    \"time\": \"%s\" \n" %
+                    fp.write("    \"id\": 123");
+                    fp.write("    \"gifUrl\": \"%s\", \n" % recording_now);
+                    fp.write("    \"timestamp\": \"%s\", \n" %
                              str(datetime.datetime.now()))
+                    fp.write("    \"tags\": [\"andrej\",\"passport\"]");
                     fp.write("}\n")
                     fp.close()
                     recording_now = "NONE"
