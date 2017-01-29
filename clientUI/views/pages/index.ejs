@@ -74,7 +74,9 @@ document.getElementById("search-box")
     .addEventListener("keyup", function(event) {
     event.preventDefault();
     if (event.keyCode == 13) {
-        window.location = 'http://localhost:3000/'  + document.getElementById("search-box").value;
+    	var URL = '192.168.43.167:3000/';
+		// var URL = 'http://localhost:3000/';
+        window.location = URL  + document.getElementById("search-box").value;
     }
 });
 </script>
