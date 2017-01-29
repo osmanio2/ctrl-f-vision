@@ -43,6 +43,11 @@ def item_seen(frame):
     #scipy.misc.imresize(np.asarray(frame), min(200.0 / w, 200.0 / h))
     #return run_inference_on_image(np.asarray(frame))
 
+# method to write the gif
+def gifwrite(name, img_buffer):
+    kargs = { 'quantizer':'nq' }
+    imageio.mimwrite(name, img_buffer, 'GIF-FI', kargs**)
+
 # main loop
 for im in reader:
     # get current frame
@@ -71,9 +76,8 @@ for im in reader:
                 if (post_frames == frames_after):
                     # we would love to make the gif more compressed...
                     post_frames = 0
-                    kargs = { 'quantizer':'nq' }
                     try:
-                        thread.start_new_thread(imageio.mimwrite, ("../records/%s.gif" % recording_now, img_buffer, 'GIF-FI'))
+                        thread.start_new_thread(gifwrite, ("../records/%s.gif" % recording_now, img_buffer))
                     except:
                         print("Could not spawn gif creation thread")
                     # write additional data inside json
