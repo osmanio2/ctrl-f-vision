@@ -22,7 +22,10 @@ max_buffer_len = 50
 # what is currently recorded?
 img_buffer = []
 recording_now = "without"
+<<<<<<< HEAD:camera/camera_osman.py
 sess = create_graph()
+=======
+>>>>>>> 18a2a7adbe5392a9fc47f82a698352f213c8d41c:camera/camera.py
 
 # manage recording 'logic'
 idx = 0
@@ -82,9 +85,11 @@ for im in reader:
                     # write additional data inside json
                     fp = open("../records/%s.json" % recording_now, 'w')
                     fp.write("{\n")
-                    fp.write("    \"id\": \"%s\", \n" % recording_now);
-                    fp.write("    \"time\": \"%s\" \n" %
+                    fp.write("    \"id\": 123");
+                    fp.write("    \"gifUrl\": \"%s\", \n" % recording_now);
+                    fp.write("    \"timestamp\": \"%s\", \n" %
                              str(datetime.datetime.now()))
+                    fp.write("    \"tags\": [\"andrej\",\"passport\"]");
                     fp.write("}\n")
                     fp.close()
                     recording_now = "NONE"
