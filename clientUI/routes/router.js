@@ -1,16 +1,18 @@
-var request = require('request');
 var rp = require('request-promise');
+
+var URL = '192.168.43.167:3000';
+// var URL = 'http://localhost:3000';
 
 module.exports = (router) => {
 	router.get('/', (req, res) => {
 
-		rp('http://localhost:3000/files/db.json')
+		rp(URL + '/files/db.json')
 			.then((json) => {
 				console.log(json);
 				var inventory = JSON.parse(json).entries.map( (item) => Object.assign(
 					{}, 
 					item, 
-					{ gifUrl: 'http://localhost:3000/files/' + item.gifUrl }
+					{ gifUrl: URL + '/files/' + item.gifUrl }
 				));
 				res.render('pages/index', {
 					entries: inventory,
@@ -27,14 +29,14 @@ module.exports = (router) => {
 
 	router.get('/:name', (req, res) => {
 
-		rp('http://localhost:3000/files/' + req.params.name +'.json')
+		rp(URL + '/files/' + req.params.name +'.json')
 			.then((json) => {
 				console.log(json);
 				var item = JSON.parse(json);
 				item = Object.assign(
 					{}, 
 					item, 
-					{ gifUrl: 'http://localhost:3000/files/' + item.gifUrl }
+					{ gifUrl: URL + '/files/' + item.gifUrl }
 				);
 				console.log('item', item);
 				res.render('pages/index', {
