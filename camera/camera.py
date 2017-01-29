@@ -21,7 +21,7 @@ max_buffer_len = 50
 
 # what is currently recorded?
 img_buffer = []
-recording_now = "NONE"
+recording_now = "without"
 
 # manage recording 'logic'
 idx = 0
