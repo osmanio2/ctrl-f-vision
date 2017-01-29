@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<% include ../partials/head %>
+</head>
+<body class="" style="padding-top: 0px">
+
+	<header>
+		<% include ../partials/header %>
+	</header>
+	<div class="container">
+
+	<main>
+		<!-- <div class="jumbotron">
+			<h1>Ctrl+F in real life</h1>
+			<p>Brought to you by the Cambridge Catalysts</p>
+		</div> -->
+		<div class="text-center">
+			<h1>Ctrl+F Vision</h1>
+			<!-- EYE icon -->
+			<h2>Looking for something ?</h2>
+			<div class="text-center" style="margin-top: 50px">
+				<h4>Crap, I've lost my</h4>
+			</div>
+			<div class="search">
+				<input type="text" class="" placeholder="item">
+			</div>
+		</div>
+		<!-- <p><%= /* tagline */%> The total price of all calls is <%= /* entries */ %> USD </p> -->
+		<div class="col-sm-12" style="margin-top: 40px; overflow: auto;">
+			<!-- <h2>Logs</h2> -->
+			<div class="col-sm-12 col-md-8 col-md-offset-2 content">
+				<% entries.forEach( (entry) => { %>
+				<div class="col-sm-12 item">
+					<div class=" col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-0 gif" style="padding:0 15px 0px 0">
+						<img src="<%= entry.gifUrl %>" width="100%" style="max-width: 400px">
+					</div>
+					<div class="col-sm-4 tags">
+						<h5> Looks like you last saw it here! </h5>
+						<p> @ <%= entry.timestamp %> </p>
+						<p>
+							<% entry.tags.forEach( (tag) => { %>
+							<span class="tag"><%= tag %></span>
+							<% }); %>
+						</p>
+					</div>
+				</div>
+				<% }); %>
+			</div>
+		</div>
+		
+	</main>
+	</div>
+
+	<footer style="margin-top: 40px">
+		<% include ../partials/footer %>
+	</footer>
+	
+</body>
+</html>
