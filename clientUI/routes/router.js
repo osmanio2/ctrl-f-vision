@@ -1,7 +1,6 @@
 var rp = require('request-promise');
 
-var URL = '192.168.43.167:3000';
-// var URL = 'http://localhost:3000';
+var URL = 'http://localhost:3000';
 
 module.exports = (router) => {
 	router.get('/', (req, res) => {
