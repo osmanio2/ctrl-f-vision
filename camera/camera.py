@@ -64,7 +64,7 @@ for im in reader:
                     print(img_buffer[0].shape)
                     # we would love to make the gif more compressed...
                     kargs = { 'loop':1, 'quantizer':'nq' }
-                    imageio.mimwrite("img/rec_%s.gif" % recording_now,
+                    imageio.mimwrite("gifs/%s.gif" % recording_now,
                                      img_buffer, 'GIF-FI', **kargs)
                     # get timestamp
                     print(recording_now + " was last seen at " +
