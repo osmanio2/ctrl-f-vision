@@ -49,18 +49,16 @@ def create_graph():
         graph_def.ParseFromString(f.read())
         _ = tf.import_graph_def(graph_def, name='')
 
+    return tf.Session()
+def run_inference_on_image(imagePath, sess):
+        answer = None
 
-def run_inference_on_image(image_data):
-    answer = None
-
-	
-    image = tf.placeholder(tf.int32)
-
-    with tf.Session() as sess:
+        image_data = tf.gfile.FastGFile(imagePath, 'rb').read()	
+        #image = tf.placeholder(tf.int64)
 
         softmax_tensor = sess.graph.get_tensor_by_name('final_result:0')
         predictions = sess.run(softmax_tensor,
-                               {image: image_data})
+                               {'DecodeJpeg/contents:0': image_data})
         predictions = np.squeeze(predictions)
 
         top_k = predictions.argsort()[-5:][::-1]  # Getting top 5 predictions
@@ -73,6 +71,7 @@ def run_inference_on_image(image_data):
             print('%s (score = %.5f)' % (human_string, score))
 
         answer = labels[top_k[0]]
+        answer = answer[2:-3]
         return answer
 
 
