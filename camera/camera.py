@@ -2,9 +2,10 @@ import datetime
 from retrainingexample import *
 import imageio
 import numpy as np
+import copy
 import os
 import sys
-import threading as thread
+import _thread
 import visvis as vv
 
 # which camera?
@@ -14,9 +15,13 @@ t = vv.imshow(reader.get_next_data(), clim=(0, 255))
 
 # hardcoded stuff (pick sensible values)
 sample_rate = 50
-frames_before = 5
+frames_before = 10
 frames_after = 5
 max_buffer_len = 50
+
+max_images = 4
+current_images = 0
+label = "without"
 
 # what is currently recorded?
 img_buffer = []
@@ -32,21 +37,48 @@ imageio.plugins.freeimage.download()
 
 # actually put recognition stuff
 def item_seen(frame):
-    global sess
+    global sess, max_images, current_images, label
     # DIRTY!!
     imageio.imwrite('picture_out.jpg', frame)
     image = run_inference_on_image('picture_out.jpg', sess)
-    print("This is the Image yaaaaaaaaaaaaaa {}".format(image))
-    return image
+	
+    if image != "without" and image == label:
+        current_images += 1
+    else:
+        current_images = 0
+        label = image
+	
+    if current_images > max_images:
+        print("This is the label yaaaaaaaaaaaaaa {}".format(image))
+        current_images = max_images
+        return image
+    else: 
+        print("No Still Nothing useful although I am seeing {}".format(image))
+        return "without"
+        
+	
+	
+    
     # maybe resize?
     #(w, h, c) = frame.shape
     #scipy.misc.imresize(np.asarray(frame), min(200.0 / w, 200.0 / h))
     #return run_inference_on_image(np.asarray(frame))
 
 # method to write the gif
-def gifwrite(name, img_buffer):
+def gifwrite(name, img_buf):
+    print("Thread spawned"*7)
     kargs = { 'quantizer':'nq' }
-    imageio.mimwrite(name, img_buffer, 'GIF-FI', kargs**)
+    imageio.mimwrite(name, img_buf, 'GIF-FI', **kargs)
+	# write additional data inside json
+    fp = open("../records/%s.json" % name, 'w')
+    fp.write("{\n")
+    fp.write("    \"id\": 123,");
+    fp.write("    \"gifUrl\": \"%s.gif\", \n" % name);
+    fp.write("    \"timestamp\": \"%s\", \n" %
+                             str(datetime.datetime.now()))
+    fp.write("    \"tags\": [\"andrej\",\"hack\"]");
+    fp.write("}\n")
+    fp.close()
 
 # main loop
 for im in reader:
@@ -76,19 +108,11 @@ for im in reader:
                 if (post_frames == frames_after):
                     # we would love to make the gif more compressed...
                     post_frames = 0
+                    temp_buf = copy.deepcopy(img_buffer)
                     try:
-                        thread.start_new_thread(gifwrite, ("../records/%s.gif" % recording_now, img_buffer))
+                        _thread.start_new_thread(gifwrite, ("../records/%s.gif" % recording_now, temp_buf))
                     except:
                         print("Could not spawn gif creation thread")
-                    # write additional data inside json
-                    fp = open("../records/%s.json" % recording_now, 'w')
-                    fp.write("{\n")
-                    fp.write("    \"id\": 123,");
-                    fp.write("    \"gifUrl\": \"%s.gif\", \n" % recording_now);
-                    fp.write("    \"timestamp\": \"%s\", \n" %
-                             str(datetime.datetime.now()))
-                    fp.write("    \"tags\": [\"andrej\",\"passport\"]");
-                    fp.write("}\n")
-                    fp.close()
+                    
                     recording_now = "without"
 # done!

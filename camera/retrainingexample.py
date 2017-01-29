@@ -72,6 +72,8 @@ def run_inference_on_image(imagePath, sess):
 
         answer = labels[top_k[0]]
         answer = answer[2:-3]
+        if answer == "keys" and predictions[top_k[0]] < 0.9:
+            answer = labels[top_k[1]][2:-3]
         return answer
 
 
