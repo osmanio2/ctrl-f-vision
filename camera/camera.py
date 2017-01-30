@@ -68,7 +68,7 @@ def item_seen(frame):
 def gifwrite(name, img_buf):
     print("Thread spawned"*7)
     kargs = { 'quantizer':'nq' }
-    imageio.mimwrite(name, img_buf, 'GIF-FI', **kargs)
+    imageio.mimwrite(name + ".gif", img_buf, 'GIF-FI', **kargs)
 	# write additional data inside json
     fp = open("../records/%s.json" % name, 'w')
     fp.write("{\n")
@@ -110,7 +110,7 @@ for im in reader:
                     post_frames = 0
                     temp_buf = copy.deepcopy(img_buffer)
                     try:
-                        _thread.start_new_thread(gifwrite, ("../records/%s.gif" % recording_now, temp_buf))
+                        _thread.start_new_thread(gifwrite, ("../records/%s" % recording_now, temp_buf))
                     except:
                         print("Could not spawn gif creation thread")
                     
